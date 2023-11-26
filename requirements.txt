@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+ffmpeg-python
+python-dotenv
+python-podcastindex
+requests
+feed
+whisperx @ git+https://github.com/m-bain/whisperx.git@main
+streamlit
+pymilvus==2.3.2
