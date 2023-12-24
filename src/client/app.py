@@ -1,9 +1,9 @@
 import streamlit as st
 import streamlit.components.v1 as components
-from my_component import my_component
+from app_component import app_component
 
 
-res = my_component(name="World", key="sample_key")
+result = my_component(name="Man", key="sample_key")
 
 #def main():
 #    components.html(

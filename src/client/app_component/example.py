@@ -1,16 +1,15 @@
 import streamlit as st
-
-from src.client.my_component import my_component
+from app_component import app_component
 
 # Add some test code to play with the component while it's in development.
 # During development, we can run this just as we would any other Streamlit
-# app: `$ streamlit run my_component/example.py`
+# app: `$ streamlit run app_component/example.py`
 
 st.subheader("Component with constant args")
 
 # Create an instance of our component with a constant `name` arg, and
 # print its output value.
-num_clicks = my_component("World")
+num_clicks = app_component("World")
 st.markdown("You've clicked %s times!" % int(num_clicks))
 
 st.markdown("---")
@@ -25,5 +24,5 @@ st.subheader("Component with variable args")
 # and lose its current state. In this case, we want to vary the component's
 # "name" argument without having it get recreated.
 name_input = st.text_input("Enter a name", value="Streamlit")
-num_clicks = my_component(name_input, key="foo")
+num_clicks = app_component(name_input, key="foo")
 st.markdown("You've clicked %s times!" % int(num_clicks))
