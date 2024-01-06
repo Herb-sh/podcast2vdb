@@ -15,7 +15,7 @@ _RELEASE = False
 
 # It's worth noting that this call to `declare_component` is the
 # *only thing* you need to do to create the binding between Streamlit and
-# your component frontend. Everything else we do in this file is simply a
+# your component fronb tend. Everything else we do in this file is simply a
 # best practice.
 
 if not _RELEASE:
@@ -43,7 +43,7 @@ else:
 # `declare_component` and call it done. The wrapper allows us to customize
 # our component's API: we can pre-process its input args, post-process its
 # output value, and add a docstring for users.
-def my_component(name, key=None):
+def app_component(name, key=None):
     """Create a new instance of "app_component".
 
     Parameters

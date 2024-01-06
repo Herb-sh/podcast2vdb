@@ -3,83 +3,74 @@ import {
   StreamlitComponentBase,
   withStreamlitConnection,
 } from "streamlit-component-lib"
-import React, { ReactNode } from "react"
+import React, { ReactNode, useState } from "react"
+import { Podcast } from './models';
 
-interface State {
-  numClicks: number
-  isFocused: boolean
-}
+// @TODO 1. define readonly Urls
+// @TODO 2 define model for podcast
+const BASE_URL = 'http://127.0.0.1:8000'
+const PODCAST_SEARCH_URL = BASE_URL + '/v1/podcast/{podcast_name}';
+const PODCAST_EPISODE_LIST_URL = BASE_URL + '/v1/podcast/episodes/{podcast_id}';
 
 /**
  * This is a React-based component template. The `render()` function is called
  * automatically when your component should be re-rendered.
  */
-class AppComponent extends StreamlitComponentBase<State> {
-  public state = { numClicks: 0, isFocused: false }
+class AppComponent extends StreamlitComponentBase { // State
+  public render = (): ReactNode => {
+    return (
+      <Podcasts/>
+    )
+  }
+}
+
+export class Podcasts extends React.Component {
+  public state: {podcasts: Array<Podcast>} = { podcasts: []}
+
+  public onClicked = () => {
+    console.log('onClicked');
+         // Fetch data from the API endpoint
+             const uri = encodeURIComponent('Knowledge Science - Alles über KI, ML und NLP');
+             const url = (PODCAST_SEARCH_URL + '').replace('{podcast_name}', uri);
+             console.log(url);
+             fetch(url)
+               .then(async (response) => {
+                 // Check if the response is successful (status code 200)
+                 if (response.ok) {
+                   return await response.json();
+
+                   // this.setState({ podcasts: data.feeds })
+
+                 }
+                 throw new Error('Network response was not ok.');
+               })
+               .then((jsonData) => {
+                 // Handle the received data
+                 console.log('Received data:', jsonData);
+                  this.state.podcasts = jsonData.feeds;
+                  Streamlit.setComponentValue(jsonData)
+               })
+               .catch((error) => {
+                 // Handle errors
+                 console.error('Error fetching data:', error);
+               });
+  }
 
   public render = (): ReactNode => {
-    // Arguments that are passed to the plugin in Python are accessible
-    // via `this.props.args`. Here, we access the "name" arg.
-    const name = this.props.args["name"]
-
-    // Streamlit sends us a theme object via props that we can use to ensure
-    // that our component has visuals that match the active theme in a
-    // streamlit app.
-    const { theme } = this.props
-    const style: React.CSSProperties = {}
-
-    // Maintain compatibility with older versions of Streamlit that don't send
-    // a theme object.
-    if (theme) {
-      // Use the theme object to style our button border. Alternatively, the
-      // theme style is defined in CSS vars.
-      const borderStyling = `1px solid ${
-        this.state.isFocused ? theme.primaryColor : "gray"
-      }`
-      style.border = borderStyling
-      style.outline = borderStyling
-    }
-
-    // Show a button and some text.
-    // When the button is clicked, we'll increment our "numClicks" state
-    // variable, and send its new value back to Streamlit, where it'll
-    // be available to the Python program.
     return (
-      <span>
-        Hello, {name}! Number of clicks {this.state.numClicks}&nbsp;
-        <button
-          style={style}
-          onClick={this.onClicked}
-          disabled={this.props.disabled}
-          onFocus={this._onFocus}
-          onBlur={this._onBlur}
-        >
-          Click Me!
-        </button>
-      </span>
-    )
-  }
-
-  /** Click handler for our "Click Me!" button. */
-  private onClicked = (): void => {
-    // Increment state.numClicks, and pass the new value back to
-    // Streamlit via `Streamlit.setComponentValue`.
-    this.setState(
-      prevState => {
-        return { numClicks: prevState.numClicks + 1 }
-      },
-      () => Streamlit.setComponentValue(this.state.numClicks)
-    )
-  }
-
-  /** Focus handler for our "Click Me!" button. */
-  private _onFocus = (): void => {
-    this.setState({ isFocused: true })
-  }
-
-  /** Blur handler for our "Click Me!" button. */
-  private _onBlur = (): void => {
-    this.setState({ isFocused: false })
+              <span>
+                <button onClick={this.onClicked}>
+                  Load podcasts
+                </button>
+               <ul>
+               <ul>
+                   {this.state.podcasts.map((podcast) => (
+                   <li key={podcast.id}>{podcast.author}</li>
+                   ))}
+               </ul>
+              </ul>
+              </span>
+        )
   }
 }
 

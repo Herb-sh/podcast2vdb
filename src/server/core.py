@@ -6,7 +6,7 @@ import requests
 import torch
 from torch import cuda
 from dotenv import dotenv_values
-config = dotenv_values("../.env")
+config = dotenv_values("../../.env")
 
 # update for mps(OSX) if needed
 DEFAULT_DEVICE = 'cuda' if cuda.is_available() else ('cpu' if torch.backends.mps.is_available() else 'cpu')
@@ -14,7 +14,7 @@ DEFAULT_MODEL = 'large-v2' if cuda.is_available() else ('tiny' if torch.backends
 DEFAULT_BATCH_SIZE = 16 if cuda.is_available() else (4 if torch.backends.mps.is_available() else 4)
 DEFAULT_COMPUTE_TYPE = 'float16' if cuda.is_available() else ('int8' if torch.backends.mps.is_available() else 'int8')
  
-DIR_TARGET = '../data/transcripts/'
+DIR_TARGET = '../../data/transcripts/'
 os.makedirs(DIR_TARGET, exist_ok=True)
 
 

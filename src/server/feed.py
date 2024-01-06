@@ -2,10 +2,10 @@ import os
 import podcastindex
 import requests
 from dotenv import dotenv_values
-config = dotenv_values("../.env")
+config = dotenv_values("../../.env")
 
 
-DIR_SOURCE = '../data/raw/'
+DIR_SOURCE = '../../data/raw/'
 
 os.makedirs(DIR_SOURCE, exist_ok=True)
 
