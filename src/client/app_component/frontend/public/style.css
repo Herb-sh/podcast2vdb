@@ -1,0 +1,20 @@
+body {
+  font-family: 'Arial', sans-serif;
+}
+
+.block-container {
+    padding: 0 !important;
+}
+
+.wrapper {
+    min-height: 600px;
+}
+
+.sidebar {
+  height: 100%;
+  top: 0;
+}
+
+.main {
+margin-top: 0 !important;
+}

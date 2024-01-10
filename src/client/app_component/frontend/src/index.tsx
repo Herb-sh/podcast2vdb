@@ -1,10 +1,12 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import AppComponent from "./AppComponent"
+
+import AppComponent from "./appComponent"
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <AppComponent />
+     <AppComponent />
   </React.StrictMode>,
   document.getElementById("root")
 )
