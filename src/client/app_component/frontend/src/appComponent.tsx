@@ -3,20 +3,30 @@ import {
   StreamlitComponentBase,
   withStreamlitConnection,
 } from "streamlit-component-lib";
-import React, { ReactNode, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import React, { ReactNode } from "react";
+import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react-router-dom";
 
+import { Dashboard } from "./subcomponents/dashboard";
 import { Podcasts } from "./subcomponents/podcastSearch";
-
-const Home = () => <h2>Home</h2>;
-const About = () => <h2>About</h2>;
-const Contact = () => <h2>Contact</h2>;
+import { SavedPodcasts } from "./subcomponents/savedPodcasts";
 
 /**
  * This is a React-based component template. The `render()` function is called
  * automatically when your component should be re-rendered.
  */
 class AppComponent extends StreamlitComponentBase {
+  public menuItems = [
+        { path: '/', label: 'Dashboard', icon: 'fas fa-info-circle', active: true},
+        { path: '/searchPodcasts', label: 'Search Podcasts', icon: 'fas fa-search', active: false},
+        { path: '/savedPodcasts', label: 'Saved Podcasts', icon: 'fas fa-save', active: false},
+      ];
+
+  public onMenuItemClick = (menu) => {
+    this.menuItems.forEach((item) => {
+        item.active = menu.path === item.path;
+    });
+    Streamlit.setComponentValue(this.menuItems);
+  }
   // State
   public render = (): ReactNode => {
     return (
@@ -24,31 +34,23 @@ class AppComponent extends StreamlitComponentBase {
         <div className="wrapper">
           <aside id="sidebar" className="sidebar">
             <ul className="sidebar-nav" id="sidebar-nav">
-              <li className="nav-item">
-                <Link className="nav-link active" to="/">
-                  <i className="fas fa-search"></i>
-                  <span>Search Podcasts</span>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link collapsed" to="/route1">
-                  <i className="fas fa-save"></i>
-                  <span>Saved Podcasts</span>
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link collapsed" to="/route2">
-                  <i className="fas fa-info-circle"></i>
-                  <span>Dashboard</span>
-                </Link>
-              </li>
+                {this.menuItems.map((item, index) => (
+                     <li key={index} className="nav-item">
+                        <Link to={item.path} className={item.active
+                                                        ? 'nav-link active' : 'nav-link collapsed'}
+                                                        onClick={(evt) => this.onMenuItemClick(item)}>
+                           <i className={item.icon}></i>
+                            <span>{item.label}</span>
+                        </Link>
+                      </li>
+                    ))}
             </ul>
           </aside>
           <div id="main" className="main">
             <Routes>
-              <Route path="/" element={<Podcasts />} />
-              <Route path="/route1" element={<About />} />
-              <Route path="/route2" element={<Contact />} />
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/searchPodcasts" element={<Podcasts />} />
+              <Route path="/savedPodcasts" element={<SavedPodcasts />} />
             </Routes>
           </div>
         </div>

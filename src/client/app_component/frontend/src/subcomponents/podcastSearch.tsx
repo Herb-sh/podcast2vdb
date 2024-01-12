@@ -27,8 +27,6 @@ export class Podcasts extends React.Component {
         // Check if the response is successful (status code 200)
         if (response.ok) {
           return await response.json();
-
-          // this.setState({ podcasts: data.feeds })
         }
         throw new Error("Network response was not ok.");
       })
@@ -67,18 +65,31 @@ export class Podcasts extends React.Component {
             </span>
           </div>
 
-          <div className="list-group">
-            {this.state.podcasts.map((podcast, index) => (
-              <a
-                className="list-group-item list-group-item-action  {index === 0 ? 'active' : ''}"
-                key={podcast.id}
-              >
-                {podcast.author}
-              </a>
-            ))}
-          </div>
+          <table className="table table-borderless">
+            <thead>
+              <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Author</th>
+                <th scope="col">Description</th>
+                <th scope="col">Episodes</th>
+                <th scope="col">UpdatedAt</th>
+              </tr>
+            </thead>
+            <tbody>
+               {this.state.podcasts.map(pod =>
+                  <tr>
+                     <td>
+                        <a href={pod.link}  target="_blank">{pod.title}</a>
+                     </td>
+                     <td>{pod.author}</td>
+                     <td>{pod.description}</td>
+                     <td>{pod.episodeCount}</td>
+                     <td>{pod.lastUpdateTime}</td>
+                  </tr>
+                )}
+            </tbody>
+          </table>
         </section>
       </div>
-    );
-  };
+    )};
 }
