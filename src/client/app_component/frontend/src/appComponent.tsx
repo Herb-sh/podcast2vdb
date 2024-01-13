@@ -16,7 +16,7 @@ import { SavedPodcasts } from "./subcomponents/savedPodcasts";
  */
 class AppComponent extends StreamlitComponentBase {
   public menuItems = [
-        { path: '/', label: 'Dashboard', icon: 'fas fa-info-circle', active: true},
+        { path: '/', label: 'Dashboard', icon: 'fas fa-th-large', active: true},
         { path: '/searchPodcasts', label: 'Search Podcasts', icon: 'fas fa-search', active: false},
         { path: '/savedPodcasts', label: 'Saved Podcasts', icon: 'fas fa-save', active: false},
       ];
