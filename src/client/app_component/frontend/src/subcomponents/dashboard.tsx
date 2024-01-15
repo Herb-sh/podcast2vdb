@@ -1,4 +1,5 @@
 import React, { ReactNode, useState } from "react";
+import { Link } from "react-router-dom";
 
 export class Dashboard extends React.Component {
   public render = (): ReactNode => {
@@ -10,10 +11,11 @@ export class Dashboard extends React.Component {
         <section className="section">
           <div className="row">
             <div className="col-4">
+             <Link to="/searchPodcasts">
               <div className="card info-card card-primary">
                 <div className="card-body">
                   <h5 className="card-title">
-                    Revenue <span>| This Month</span>
+                    Search Podcasts
                   </h5>
 
                   <div className="d-flex align-items-center">
@@ -21,43 +23,31 @@ export class Dashboard extends React.Component {
                       <i className="fas fa-search"></i>
                     </div>
                     <div className="ps-3">
-                      <h6>$3,264</h6>
-                      <span className="text-success small pt-1 fw-bold">
-                        8%
-                      </span>
-
-                      <span className="text-muted small pt-2 ps-1">
-                        increase
-                      </span>
+                      <h6> Search Podcasts </h6>
                     </div>
                   </div>
                 </div>
               </div>
+              </Link>
             </div>
             <div className="col-4">
-              <div className="card info-card card-success">
-                <div className="card-body">
-                  <h5 className="card-title">
-                    Revenue <span>| This Month</span>
-                  </h5>
-
-                  <div className="d-flex align-items-center">
-                    <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                      <i className="fas fa-save"></i>
-                    </div>
-                    <div className="ps-3">
-                      <h6>$3,264</h6>
-                      <span className="text-success small pt-1 fw-bold">
-                        8%
-                      </span>
-
-                      <span className="text-muted small pt-2 ps-1">
-                        increase
-                      </span>
+              <Link to="/savedPodcasts">
+                  <div className="card info-card card-success">
+                    <div className="card-body">
+                      <h5 className="card-title">
+                          Search Podcasts
+                      </h5>
+                      <div className="d-flex align-items-center">
+                        <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                          <i className="fas fa-save"></i>
+                        </div>
+                        <div className="ps-3">
+                          <h6> Saved Podcasts </h6>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
+                </Link>
             </div>
           </div>
         </section>

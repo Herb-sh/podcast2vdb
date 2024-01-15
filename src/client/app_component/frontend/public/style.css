@@ -6,6 +6,10 @@ body {
     padding: 0 !important;
 }
 
+.root {
+    background: #f6f9ff;
+}
+
 .wrapper {
     min-height: 600px;
 }
