@@ -22,7 +22,7 @@ def search_podcast(podcast_name:str, config:dict=config):
     return index.search(podcast_name)
 
 
-def get_episodes(podcast_id:int, since:int=0, max_results:int=100, config:dict=config):
+def get_episodes(podcast_id : int, since : int = 0, max_results : int = 100, config : dict = config):
     '''
     Get all episodes of a certain podcast with podcast_id.
     '''

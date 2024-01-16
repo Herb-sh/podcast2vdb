@@ -6,7 +6,7 @@ import {
 import React, { ReactNode, useState } from "react";
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { Podcast } from "./../models";
+import { Podcast } from "./../../models/podcast";
 import { PodcastDetails } from "./podcastDetails";
 
 const BASE_URL = "http://127.0.0.1:8000";
@@ -18,10 +18,11 @@ export class Podcasts extends React.Component {
     super(props);
     this.onSearch('Knowledge Science - Alles über KI, ML und NLP'); // @TODO remove later
   }
-  public state: { searchInput: string; podcasts: Array<Podcast>; openDetailsModal: boolean } = {
+  public state: { searchInput: string; podcasts: Array<Podcast>; selectedPodcast?: Podcast; openDetailsModal: boolean } = {
     podcasts: [],
     searchInput: "",
-    openDetailsModal: false
+    openDetailsModal: false,
+    selectedPodcast: undefined
   };
 
   public onSearch = (value) => {
@@ -57,6 +58,7 @@ export class Podcasts extends React.Component {
 
   public openDetailsModal = (podcast: Podcast) => {
       this.state.openDetailsModal = true;
+      this.state.selectedPodcast = podcast;
       Streamlit.setComponentValue(this.state);
   }
 
@@ -99,7 +101,6 @@ export class Podcasts extends React.Component {
                 <th scope="col">Author</th>
                 <th scope="col">Description</th>
                 <th scope="col">UpdatedAt</th>
-                <th scope="col">Episodes</th>
                 <th scope="col"></th>
               </tr>
             </thead>
@@ -116,13 +117,10 @@ export class Podcasts extends React.Component {
                      <td>{pod.description}</td>
                      <td>{pod.lastUpdateTime}</td>
                      <td>
-                        <button className="btn btn-sm btn-primary" onClick={(evt) => this.openDetailsModal(pod)}>
-                           <i className="fas fa-info-square"></i>
-                           Transcribe ({pod.episodeCount})
+                        <button className="btn btn-sm btn-primary w-80" onClick={(evt) => this.openDetailsModal(pod)}>
+                           <i className="fas fa-podcast mr-2"></i>
+                           Open ({pod.episodeCount} Ep.)
                         </button>
-                     </td>
-                     <td>
-
                      </td>
                   </tr>
                 )}
@@ -134,10 +132,13 @@ export class Podcasts extends React.Component {
 
         <Modal size="lg" show={this.state.openDetailsModal} onHide={this.closeDetailsModal}>
            <Modal.Header closeButton>
-               <Modal.Title>Modal heading</Modal.Title>
+               <Modal.Title>
+                    <i className="fas fa-podcast fa-lg mr-2"></i>
+                    {this.state.selectedPodcast?.title}
+               </Modal.Title>
            </Modal.Header>
            <Modal.Body>
-             <PodcastDetails />
+             <PodcastDetails podcast={this.state.selectedPodcast} />
            </Modal.Body>
            <Modal.Footer>
               <Button variant="secondary" onClick={this.closeDetailsModal}>

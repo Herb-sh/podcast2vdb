@@ -20,7 +20,7 @@ body {
 }
 
 .main {
-margin-top: 0 !important;
+  margin-top: 0 !important;
 }
 
 .dashboard .card-primary .card-icon {
@@ -36,4 +36,12 @@ margin-top: 0 !important;
 .dashboard .card-warning .card-icon {
   color: #ff771d;
   background: #ffecdf;
+}
+
+.w-80 {
+    width: 80px !important;
+}
+
+.mr-2 {
+   margin-right: 0.3rem;
 }

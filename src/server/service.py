@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import dotenv_values
-import feed as feed
+from feed import search_podcast, get_episodes
 import podcastindex
 config = dotenv_values("../../.env")
 
@@ -33,22 +33,24 @@ def feed(podcast_name: str):
     '''
     Search for podcast with a certain podcast_name.
     '''
+    '''
     podcastindex_config = {
         'api_key': config['PODCASTINDEX_API_KEY'],
         'api_secret': config['PODCASTINDEX_API_SECRET']
     }
     index = podcastindex.init(podcastindex_config)
-    return index.search(podcast_name)
+    return index.search(podcast_name, max_results=20)
+    '''
     #print(feed.search_podcast)
-    #return feed.search_podcast(podcast_name)
+    return search_podcast(podcast_name)
 
 
 @app.get("/v1/podcast/episodes/{podcast_id}")
-async def get_episodes(podcast_id:str,  max_results:int=100, last_saved_episode:int=0):
+async def get_episode_list(podcast_id: str,  max_results: int = 100, last_saved_episode : int = 0):
     '''
     get all episodes of a given podcast up to limit of max_result since last_saved_episode
     '''
-    return feed.get_episodes(podcast_id, max_results=max_results, since=last_saved_episode)
+    return get_episodes(podcast_id, max_results=max_results)
 
 
 
