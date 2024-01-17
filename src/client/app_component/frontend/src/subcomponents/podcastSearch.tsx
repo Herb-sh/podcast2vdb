@@ -100,7 +100,7 @@ export class Podcasts extends React.Component {
                 <th scope="col">Title</th>
                 <th scope="col">Author</th>
                 <th scope="col">Description</th>
-                <th scope="col">UpdatedAt</th>
+                <th scope="col">Categories</th>
                 <th scope="col"></th>
               </tr>
             </thead>
@@ -115,7 +115,7 @@ export class Podcasts extends React.Component {
                      </td>
                      <td>{pod.author}</td>
                      <td>{pod.description}</td>
-                     <td>{pod.lastUpdateTime}</td>
+                     <td>{Object.values(pod.categories || []).join(', ')}</td>
                      <td>
                         <button className="btn btn-sm btn-primary w-80" onClick={(evt) => this.openDetailsModal(pod)}>
                            <i className="fas fa-podcast mr-2"></i>

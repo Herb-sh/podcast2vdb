@@ -41,7 +41,6 @@ def feed(podcast_name: str):
     index = podcastindex.init(podcastindex_config)
     return index.search(podcast_name, max_results=20)
     '''
-    #print(feed.search_podcast)
     return search_podcast(podcast_name)
 
 
