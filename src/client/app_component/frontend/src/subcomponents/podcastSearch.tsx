@@ -3,7 +3,7 @@ import {
   StreamlitComponentBase,
   withStreamlitConnection,
 } from "streamlit-component-lib";
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode } from "react";
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { Podcast } from "./../../models/podcast";
@@ -130,7 +130,7 @@ export class Podcasts extends React.Component {
           {this.state.searchInput && <div className="text-center">Search returned {this.state.podcasts.length} item/s.</div>}
         </section>
 
-        <Modal size="lg" show={this.state.openDetailsModal} onHide={this.closeDetailsModal}>
+        <Modal size="xl" show={this.state.openDetailsModal} onHide={this.closeDetailsModal}>
            <Modal.Header closeButton>
                <Modal.Title>
                     <i className="fas fa-podcast fa-lg mr-2"></i>
