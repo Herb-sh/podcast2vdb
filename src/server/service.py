@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import dotenv_values
-from feed import search_podcast, get_episodes
+from feed import search_podcast, get_episodes, get_episode
 from db import main, create_collections, insert
 from core import transcribe
 
@@ -55,20 +55,11 @@ async def get_episode_list(podcast_id: str,  max_results: int = 100, last_saved_
     return get_episodes(podcast_id, max_results=max_results)
 
 # VectorDB call, Items found are already transcribed
-# @TODO 2 calls to implement
-@app.get("/v1/vdb/podcast/{podcast_id}")
-def get_vdb_episode_list(podcast_id: str):
-    return []
 
-@app.get("/v1/vdb/episode/{podcast_id}")
-def get_vdb_episode_list(podcast_id: str):
-    return []
-
-@app.post("/v1/transcribe/episode/{episode_id}")
+@app.get("/v1/transcribe/episode/{episode_id}")
 async def get_vdb_episode_list(episode_id: str):
-    print('episode_id ' + episode_id)
     #
-    episode = get_episodes(episode_id=episode_id)
+    episode = get_episode(episode_id=episode_id)
     print(episode)
     #
     filename_audio = feed.download_episode(episode.episode_url, episode_id=episode.episode_id)
@@ -88,4 +79,13 @@ async def get_vdb_episode_list(episode_id: str):
     insert("segment", transcript_parsed)
     return []
 
+
+# @TODO 2 calls to implement
+@app.get("/v1/vdb/podcast/episodes/{podcast_id}")
+def get_vdb_episode_list(podcast_id: str):
+    return []
+
+@app.get("/v1/vdb/episode/{podcast_id}")
+def get_vdb_episode_list(podcast_id: str):
+    return []
 

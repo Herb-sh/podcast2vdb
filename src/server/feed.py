@@ -37,6 +37,20 @@ def get_episodes(podcast_id : int, since : int = 0, max_results : int = 100, con
     else:
         return []
 
+def get_episode(episode_id: int):
+    '''
+    Get all episodes of a certain podcast with podcast_id.
+    '''
+    podcastindex_config = {
+        'api_key':  config['PODCASTINDEX_API_KEY'],
+        'api_secret': config['PODCASTINDEX_API_SECRET']
+    }
+    index = podcastindex.init(podcastindex_config)
+    result = index.episodeById(id=episode_id,)
+    if result:
+        return result
+    else:
+        return []
 
 def download_episode(episode_url, dir=DIR_SOURCE, episode_id=None):
     if episode_id is None:
