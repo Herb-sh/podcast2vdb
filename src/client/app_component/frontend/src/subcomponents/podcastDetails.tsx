@@ -7,11 +7,10 @@ import React, { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import Modal from 'react-bootstrap/Modal';
 import { Podcast } from "./../../models/podcast";
+import { BASE_URL, EPISODE_LIST_URL } from "./../config";
 import { Episode, EpisodeExtended } from "./../../models/episode";
 import { EpisodeTranscribe } from "./episodeTranscribe"
 
-const BASE_URL = "http://127.0.0.1:8000";
-const PODCAST_EPISODE_LIST_URL = BASE_URL + "/v1/podcast/episodes/{podcast_id}";
 
 type Props = { podcast: Podcast | undefined };
 type State = {
@@ -40,7 +39,7 @@ export class PodcastDetails extends React.Component<Props, State> {
   }
 
   public getEpisodes(podcastId: number | undefined) {
-        const url = (PODCAST_EPISODE_LIST_URL + "").replace("{podcast_id}", podcastId + '');
+        const url = (EPISODE_LIST_URL + "").replace("{podcast_id}", podcastId + '');
         fetch(url)
           .then(async (response) => {
             // Check if the response is successful (status code 200)
@@ -162,7 +161,7 @@ export class PodcastDetails extends React.Component<Props, State> {
 
                    <Modal size="lg" show={this.state.openTranscribeModal} onHide={this.onCloseTranscribeModal}>
                       <Modal.Header closeButton>
-                          <Modal.Title>
+                          <Modal.Title className="text-center w-100">
                               {this.state.selectedEpisode?.title}
                           </Modal.Title>
                       </Modal.Header>

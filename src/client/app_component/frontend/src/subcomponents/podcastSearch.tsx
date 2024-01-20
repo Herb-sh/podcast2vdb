@@ -8,10 +8,8 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { Podcast } from "./../../models/podcast";
 import { PodcastDetails } from "./podcastDetails";
+import { BASE_URL, PODCAST_SEARCH_URL, EPISODE_LIST_URL } from "./../config";
 
-const BASE_URL = "http://127.0.0.1:8000";
-const PODCAST_SEARCH_URL = BASE_URL + "/v1/podcast/{podcast_name}";
-const PODCAST_EPISODE_LIST_URL = BASE_URL + "/v1/podcast/episodes/{podcast_id}";
 
 export class Podcasts extends React.Component {
   constructor(props) {

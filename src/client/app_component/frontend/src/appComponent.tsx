@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Routes, Route, Link, useLocation } from "react
 
 import { Dashboard } from "./subcomponents/dashboard";
 import { Podcasts } from "./subcomponents/podcastSearch";
-import { SavedPodcasts } from "./subcomponents/savedPodcasts";
+import { PodcastSaved } from "./subcomponents/podcastSaved";
 
 /**
  * This is a React-based component template. The `render()` function is called
@@ -50,7 +50,7 @@ class AppComponent extends StreamlitComponentBase {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/searchPodcasts" element={<Podcasts />} />
-              <Route path="/savedPodcasts" element={<SavedPodcasts />} />
+              <Route path="/savedPodcasts" element={<PodcastSaved />} />
             </Routes>
           </div>
         </div>

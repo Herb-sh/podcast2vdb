@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from "react";
 
-export class SavedPodcasts extends React.Component {
+export class PodcastSaved extends React.Component {
     public render = (): ReactNode => {
         return (
             <div>
