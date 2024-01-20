@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import dotenv_values
 from feed import search_podcast, get_episodes
+from db import main, create_collections, insert
+from core import transcribe
+
 import podcastindex
 config = dotenv_values("../../.env")
 
@@ -51,5 +54,38 @@ async def get_episode_list(podcast_id: str,  max_results: int = 100, last_saved_
     '''
     return get_episodes(podcast_id, max_results=max_results)
 
+# VectorDB call, Items found are already transcribed
+# @TODO 2 calls to implement
+@app.get("/v1/vdb/podcast/{podcast_id}")
+def get_vdb_episode_list(podcast_id: str):
+    return []
+
+@app.get("/v1/vdb/episode/{podcast_id}")
+def get_vdb_episode_list(podcast_id: str):
+    return []
+
+@app.post("/v1/transcribe/episode/{episode_id}")
+async def get_vdb_episode_list(episode_id: str):
+    print('episode_id ' + episode_id)
+    #
+    episode = get_episodes(episode_id=episode_id)
+    print(episode)
+    #
+    filename_audio = feed.download_episode(episode.episode_url, episode_id=episode.episode_id)
+    print(filename_audio)
+    #
+    (filename_transcript, transcript) = transcribe(episode.episode_id, filename_audio, diarize=False)
+    #
+    transcript_parsed = transcript['parsed_transcript']
+    return transcript_parsed
+    #
+    main()
+    #
+    print('Connection established')
+    #
+    create_collections()
+    #
+    insert("segment", transcript_parsed)
+    return []
 
 

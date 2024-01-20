@@ -24,13 +24,15 @@ def create_connection():
 
 def create_collections():
     segment_fields = [
+        FieldSchema(name="podcast_id", dtype=DataType.INT64),
+        FieldSchema(name="episode_id", dtype=DataType.INT64),
+        FieldSchema(name="title", dtype=DataType.VARCHAR, max_length=10000),
         FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
         FieldSchema(name="embeddings", dtype=DataType.FLOAT_VECTOR, dim=4),
         FieldSchema(name="start", dtype=DataType.DOUBLE),
         FieldSchema(name="end", dtype=DataType.DOUBLE),
         FieldSchema(name="speaker", dtype=DataType.VARCHAR, max_length=10000),
         FieldSchema(name="text", dtype=DataType.VARCHAR, max_length=10000),
-        FieldSchema(name="episode", dtype=DataType.INT64)
     ]
 
     # Collection Schema
@@ -98,15 +100,15 @@ def delete_item_by_id(collection_name:str, id):
         collection = Collection(collection_name)
     else:
         print("Collection not available!")
-
-    result = collection.query(expr=f"id=={id}")
+    expr = f"id=={id}"
+    result = collection.query(expr=expr)
     print(f"query before delete by expr=`{expr}` -> result: \n-{result[0]}\n-{result[1]}\n")
 
     collection.delete(expr=f"id=={id}")
 
 # Drop Collection
 def drop_collection(collection_name:str):
-    print(fmt.format("Drop collection " + collection_name))
+    # print(fmt.format("Drop collection " + collection_name))
     utility.drop_collection(collection_name)
 
 def main():

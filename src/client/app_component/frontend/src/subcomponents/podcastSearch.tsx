@@ -63,10 +63,9 @@ export class Podcasts extends React.Component {
   }
 
   public closeDetailsModal = () => {
-  console.log('closeDetailsModal')
       this.state.openDetailsModal = false;
       Streamlit.setComponentValue(this.state);
-    }
+  }
 
   public close
 

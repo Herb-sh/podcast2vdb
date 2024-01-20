@@ -8,12 +8,19 @@ import { Link } from "react-router-dom";
 import Modal from 'react-bootstrap/Modal';
 import { Podcast } from "./../../models/podcast";
 import { Episode, EpisodeExtended } from "./../../models/episode";
+import { EpisodeTranscribe } from "./episodeTranscribe"
 
 const BASE_URL = "http://127.0.0.1:8000";
 const PODCAST_EPISODE_LIST_URL = BASE_URL + "/v1/podcast/episodes/{podcast_id}";
 
 type Props = { podcast: Podcast | undefined };
-type State = { episodes: Array<Episode>, filteredEpisodes: Array<Episode>, dbEpisodes: Array<number> };
+type State = {
+    episodes: Array<Episode>,
+    filteredEpisodes: Array<Episode>,
+    dbEpisodes: Array<number>,
+    selectedEpisode?: Episode,
+    openTranscribeModal: boolean
+};
 
 export class PodcastDetails extends React.Component<Props, State> {
     constructor(props) {
@@ -27,7 +34,9 @@ export class PodcastDetails extends React.Component<Props, State> {
   public state: State = {
     episodes: [],
     filteredEpisodes: [],
-    dbEpisodes: []
+    dbEpisodes: [],
+    selectedEpisode: undefined,
+    openTranscribeModal: false
   }
 
   public getEpisodes(podcastId: number | undefined) {
@@ -67,8 +76,15 @@ export class PodcastDetails extends React.Component<Props, State> {
     console.log('open details');
   }
 
-  public onTranscribe(episodeId: number) {
-    console.log('transcribe');
+  public onCloseTranscribeModal = () =>  {
+    this.state.openTranscribeModal = false;
+    Streamlit.setComponentValue(this.state);
+  }
+
+  public onTranscribe(episode: Episode) {
+    this.state.selectedEpisode = episode;
+    this.state.openTranscribeModal = true;
+    Streamlit.setComponentValue(this.state);
   }
 
   public onDelete(episodeId: number) {
@@ -127,7 +143,7 @@ export class PodcastDetails extends React.Component<Props, State> {
                                     </button>}
                                     {(this.state.dbEpisodes.indexOf(episode.id) === -1)
                                     && <button className="btn btn-sm btn-success w-80"
-                                        onClick={(evt) => {this.onTranscribe(episode.id)}}>
+                                        onClick={(evt) => {this.onTranscribe(episode)}}>
                                         <i className="fas fa-cogs mr-2"></i>
                                         Transcribe
                                     </button>}
@@ -143,6 +159,17 @@ export class PodcastDetails extends React.Component<Props, State> {
                          )}
                      </tbody>
                    </table>}
+
+                   <Modal size="lg" show={this.state.openTranscribeModal} onHide={this.onCloseTranscribeModal}>
+                      <Modal.Header closeButton>
+                          <Modal.Title>
+                              {this.state.selectedEpisode?.title}
+                          </Modal.Title>
+                      </Modal.Header>
+                      <Modal.Body>
+                           <EpisodeTranscribe episode={this.state.selectedEpisode} />
+                      </Modal.Body>
+                   </Modal>
             </div>
         )
     }
