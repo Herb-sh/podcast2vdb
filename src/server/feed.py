@@ -37,7 +37,7 @@ def get_episodes(podcast_id : int, since : int = 0, max_results : int = 100, con
     else:
         return []
 
-def get_episode(episode_id: int):
+def get_episode(episode_id: int, config : dict = config):
     '''
     Get all episodes of a certain podcast with podcast_id.
     '''
@@ -52,7 +52,7 @@ def get_episode(episode_id: int):
     else:
         return []
 
-def download_episode(episode_url, dir=DIR_SOURCE, episode_id=None):
+def download_episode(episode_url: str, dir=DIR_SOURCE, episode_id=None):
     if episode_id is None:
         filename = episode_url.split('/')[-1]
     else:

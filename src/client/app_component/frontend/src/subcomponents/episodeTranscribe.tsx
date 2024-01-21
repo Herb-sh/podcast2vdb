@@ -10,8 +10,8 @@ import { BASE_URL, EPISODE_TRANSCRIBE_URL } from "./../config";
 
 import { Episode } from "./../../models/episode";
 
-type Props = { episode: Episode | undefined };
-type State = { episode: Episode | undefined,  };
+type Props = { episode: Episode | undefined, onClose: Function };
+type State = { episode: Episode | undefined };
 
 export class EpisodeTranscribe extends React.Component<Props, State> {
   public props: Props;
@@ -34,12 +34,17 @@ export class EpisodeTranscribe extends React.Component<Props, State> {
       })
       .then((jsonData) => {
         console.log('jsonData', jsonData);
+        this.transcriptionFinished();
         Streamlit.setComponentValue(jsonData);
       })
       .catch((error) => {
         // Handle errors
         console.error("Error fetching data:", error);
       });
+  }
+
+  public transcriptionFinished() {
+    this.props.onClose();
   }
 
   public render() {

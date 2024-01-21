@@ -166,7 +166,7 @@ export class PodcastDetails extends React.Component<Props, State> {
                           </Modal.Title>
                       </Modal.Header>
                       <Modal.Body>
-                           <EpisodeTranscribe episode={this.state.selectedEpisode} />
+                           <EpisodeTranscribe episode={this.state.selectedEpisode} onClose={this.onCloseTranscribeModal} />
                       </Modal.Body>
                    </Modal>
             </div>

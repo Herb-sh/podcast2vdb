@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import dotenv_values
-from feed import search_podcast, get_episodes, get_episode
+from feed import search_podcast, get_episodes, get_episode, download_episode
 from db import main, create_collections, insert
 from core import transcribe
 
@@ -59,15 +59,18 @@ async def get_episode_list(podcast_id: str,  max_results: int = 100, last_saved_
 @app.get("/v1/transcribe/episode/{episode_id}")
 async def get_vdb_episode_list(episode_id: str):
     #
-    episode = get_episode(episode_id=episode_id)
-    print(episode)
+    result = get_episode(episode_id=episode_id)
+    episode = result['episode']
     #
-    filename_audio = feed.download_episode(episode.episode_url, episode_id=episode.episode_id)
+    filename_audio = download_episode(episode_url=episode['enclosureUrl'], episode_id=episode['id'])
     print(filename_audio)
+    print('DOWNLOADED!!!')
     #
-    (filename_transcript, transcript) = transcribe(episode.episode_id, filename_audio, diarize=False)
+    (filename_transcript, transcript) = transcribe(episode['id'], filename_audio, diarize=False)
     #
+    print('Transcribed!')
     transcript_parsed = transcript['parsed_transcript']
+    print(transcript_parsed)
     return transcript_parsed
     #
     main()
