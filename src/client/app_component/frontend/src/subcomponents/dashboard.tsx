@@ -15,7 +15,7 @@ export class Dashboard extends React.Component {
               <div className="card info-card card-primary">
                 <div className="card-body">
                   <h5 className="card-title">
-                    Search Podcasts
+                    &nbsp;
                   </h5>
 
                   <div className="d-flex align-items-center">
@@ -35,7 +35,7 @@ export class Dashboard extends React.Component {
                   <div className="card info-card card-success">
                     <div className="card-body">
                       <h5 className="card-title">
-                          Search Podcasts
+                          &nbsp;
                       </h5>
                       <div className="d-flex align-items-center">
                         <div className="card-icon rounded-circle d-flex align-items-center justify-content-center">

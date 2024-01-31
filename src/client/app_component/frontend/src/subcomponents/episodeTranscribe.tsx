@@ -11,14 +11,20 @@ import { BASE_URL, EPISODE_TRANSCRIBE_URL } from "./../config";
 import { Episode } from "./../../models/episode";
 
 type Props = { episode: Episode | undefined, onClose: Function };
-type State = { episode: Episode | undefined };
+type State = { episode: Episode | undefined};
 
 export class EpisodeTranscribe extends React.Component<Props, State> {
   public props: Props;
+   public state: State = {
+    episode: undefined
+  };
   constructor(props) {
     super(props);
     this.props = props;
-    this.startTranscription();
+  }
+
+  public componentDidMount() {
+      this.startTranscription();
   }
 
   public startTranscription() {

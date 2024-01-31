@@ -24,10 +24,6 @@ type State = {
 export class PodcastDetails extends React.Component<Props, State> {
     constructor(props) {
         super(props);
-        // called twice!
-        this.getEpisodes(this.props?.podcast?.id);
-        //
-        this.getDBEpisodes(this.props?.podcast?.id);
     }
 
   public state: State = {
@@ -36,6 +32,13 @@ export class PodcastDetails extends React.Component<Props, State> {
     dbEpisodes: [],
     selectedEpisode: undefined,
     openTranscribeModal: false
+  }
+
+
+  public componentDidMount() {
+      this.getEpisodes(this.props?.podcast?.id);
+      //
+      this.getDBEpisodes(this.props?.podcast?.id);
   }
 
   public getEpisodes(podcastId: number | undefined) {

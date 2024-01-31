@@ -21,6 +21,14 @@ def search_podcast(podcast_name:str, config:dict=config):
     index = podcastindex.init(podcastindex_config)
     return index.search(podcast_name)
 
+def get_podcast_by_feedId(feedId: int):
+    podcastindex_config = {
+        'api_key': config['PODCASTINDEX_API_KEY'],
+        'api_secret': config['PODCASTINDEX_API_SECRET']
+    }
+    index = podcastindex.init(podcastindex_config)
+    return index.podcastByFeedId(feedId)
+
 
 def get_episodes(podcast_id : int, since : int = 0, max_results : int = 100, config : dict = config):
     '''

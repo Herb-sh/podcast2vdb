@@ -71,7 +71,7 @@ export class Podcasts extends React.Component {
     return (
       <div>
         <div className="pagetitle">
-          <h1>Podcast Search</h1>
+          <h1>Search Podcasts</h1>
         </div>
         <section className="section">
           <div className="input-group mb-3">
