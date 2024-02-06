@@ -39,7 +39,6 @@ export class EpisodeTranscribe extends React.Component<Props, State> {
         throw new Error("Network response was not ok.");
       })
       .then((jsonData) => {
-        console.log('jsonData', jsonData);
         this.transcriptionFinished();
         Streamlit.setComponentValue(jsonData);
       })

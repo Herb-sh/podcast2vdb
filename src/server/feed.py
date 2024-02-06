@@ -9,6 +9,9 @@ DIR_SOURCE = '../../data/raw/'
 
 os.makedirs(DIR_SOURCE, exist_ok=True)
 
+'''
+PodcastIndex Feed Methods
+'''
 
 def search_podcast(podcast_name:str, config:dict=config):
     '''
@@ -28,7 +31,6 @@ def get_podcast_by_feedId(feedId: int):
     }
     index = podcastindex.init(podcastindex_config)
     return index.podcastByFeedId(feedId)
-
 
 def get_episodes(podcast_id : int, since : int = 0, max_results : int = 100, config : dict = config):
     '''

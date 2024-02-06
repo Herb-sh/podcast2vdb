@@ -10,6 +10,7 @@ import { Podcast } from "./../../models/podcast";
 import { BASE_URL, EPISODE_LIST_URL } from "./../config";
 import { Episode, EpisodeExtended } from "./../../models/episode";
 import { EpisodeTranscribe } from "./episodeTranscribe"
+import { convertDurationToTime } from  "./../utility"
 
 
 type Props = { podcast: Podcast | undefined };
@@ -25,6 +26,8 @@ export class PodcastDetails extends React.Component<Props, State> {
     constructor(props) {
         super(props);
     }
+
+  private _convertDurationToTime = convertDurationToTime;
 
   public state: State = {
     episodes: [],
@@ -175,15 +178,4 @@ export class PodcastDetails extends React.Component<Props, State> {
             </div>
         )
     }
-
-       private _convertDurationToTime(seconds) {
-          const hours = Math.floor(seconds / 3600);
-          const minutes = Math.floor((seconds % 3600) / 60);
-          const remainingSeconds = seconds % 60;
-
-          // Format the result
-          const formattedTime = `${hours}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-
-          return formattedTime;
-        };
 }
