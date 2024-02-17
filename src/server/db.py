@@ -152,7 +152,7 @@ def get_episode_list_by_podcast_id(podcast_id:int):
         'anns_field': 'embedding',
         'param': {'metric_type': 'L2', 'params': {'nlist': 128}},
         'limit': 1,
-        'expr': "podcast_id == 'podcast_id'",
+        'expr': f"podcast_id == {podcast_id}",
         'output_fields': ['id', 'title', 'description', 'datePublishedPretty',
                           'image', 'enclosureUrl', 'podcast_id']
     }

@@ -7,9 +7,10 @@ import React, { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import Modal from 'react-bootstrap/Modal';
 import { Podcast } from "./../../models/podcast";
-import { BASE_URL, EPISODE_LIST_URL } from "./../config";
+import { BASE_URL, EPISODE_LIST_URL, EPISODE_LIST_VDB_URL, SEGMENT_LIST_VDB_URL } from "./../config";
 import { Episode, EpisodeExtended } from "./../../models/episode";
 import { EpisodeTranscribe } from "./episodeTranscribe"
+import { SegmentList } from "./segmentList"
 import { convertDurationToTime } from  "./../utility"
 
 
@@ -17,12 +18,13 @@ type Props = { podcast: Podcast | undefined };
 type State = {
     episodes: Array<Episode>,
     filteredEpisodes: Array<Episode>,
-    dbEpisodes: Array<number>,
+    dbEpisodes: Array<Episode>,
     selectedEpisode?: Episode,
-    openTranscribeModal: boolean
+    openTranscribeModal: boolean,
+    openSegmentModal: boolean
 };
 
-export class PodcastDetails extends React.Component<Props, State> {
+export class EpisodeList extends React.Component<Props, State> {
     constructor(props) {
         super(props);
     }
@@ -34,7 +36,8 @@ export class PodcastDetails extends React.Component<Props, State> {
     filteredEpisodes: [],
     dbEpisodes: [],
     selectedEpisode: undefined,
-    openTranscribeModal: false
+    openTranscribeModal: false,
+    openSegmentModal: false
   }
 
 
@@ -45,7 +48,7 @@ export class PodcastDetails extends React.Component<Props, State> {
   }
 
   public getEpisodes(podcastId: number | undefined) {
-        const url = (EPISODE_LIST_URL + "").replace("{podcast_id}", podcastId + '');
+        const url = (EPISODE_LIST_URL + "").replace("{podcast_id}", (podcastId || '') + '');
         fetch(url)
           .then(async (response) => {
             // Check if the response is successful (status code 200)
@@ -67,7 +70,24 @@ export class PodcastDetails extends React.Component<Props, State> {
   }
 
   public getDBEpisodes(podcastId: number | undefined) {
-    this.state.dbEpisodes = [];
+            const url = (EPISODE_LIST_VDB_URL + "").replace("{podcast_id}", podcastId + '');
+            fetch(url)
+              .then(async (response) => {
+                // Check if the response is successful (status code 200)
+                if (response.ok) {
+                  return await response.json();
+                }
+                throw new Error("Network response was not ok.");
+              })
+              .then((jsonData) => {
+                // Handle the received data
+                this.state.dbEpisodes = jsonData;
+                Streamlit.setComponentValue(jsonData);
+              })
+              .catch((error) => {
+                // Handle errors
+                console.error("Error fetching data:", error);
+              });
   }
 
   public onSearch(searchField) {
@@ -77,8 +97,29 @@ export class PodcastDetails extends React.Component<Props, State> {
     Streamlit.setComponentValue(this.state);
   }
 
-  public onOpenDetails(episodeId: number) {
-    console.log('open details');
+  public onOpenDetails(episode: Episode) {
+        this.state.selectedEpisode = episode;
+        this.state.openSegmentModal = true;
+        Streamlit.setComponentValue(this.state);
+       /*          const url = SEGMENT_LIST_VDB_URL.replace('{episode_id}', episodeId);
+                    fetch(url)
+                      .then(async (response) => {
+                        // Check if the response is successful (status code 200)
+                        if (response.ok) {
+                          return await response.json();
+                        }
+                        throw new Error("Network response was not ok.");
+                      })
+                      .then((jsonData) => {
+                        // Handle the received data
+                        this.state.segments = jsonData.sort((a, b) => a.start - b.start);
+                        Streamlit.setComponentValue(jsonData);
+                      })
+                      .catch((error) => {
+                        // Handle errors
+                        console.error("Error fetching data:", error);
+                      });
+                      */
   }
 
   public onCloseTranscribeModal = () =>  {
@@ -89,6 +130,11 @@ export class PodcastDetails extends React.Component<Props, State> {
   public onTranscribe(episode: Episode) {
     this.state.selectedEpisode = episode;
     this.state.openTranscribeModal = true;
+    Streamlit.setComponentValue(this.state);
+  }
+
+  public onCloseSegmentModal = () => {
+    this.state.openSegmentModal = false;
     Streamlit.setComponentValue(this.state);
   }
 
@@ -139,20 +185,20 @@ export class PodcastDetails extends React.Component<Props, State> {
                               <td><div dangerouslySetInnerHTML={{ __html: episode['description'] }} /></td>
                               <td>{this._convertDurationToTime(episode['duration'])}</td>
                               <td>
-                                <div className="btn-group">
-                                    {(this.state.dbEpisodes.indexOf(episode.id) !== -1)
+                                <div className="btn-group w-100">
+                                    {(this.state.dbEpisodes.map(item => item.id).indexOf(episode.id) !== -1)
                                         && <button className="btn btn-sm btn-primary w-80"
-                                        onClick={(evt) => {this.onOpenDetails(episode.id)}}>
+                                        onClick={(evt) => {this.onOpenDetails(episode)}}>
                                         <i className="fas fa-plus-circle mr-2"></i>
                                         Details
                                     </button>}
-                                    {(this.state.dbEpisodes.indexOf(episode.id) === -1)
+                                    {(this.state.dbEpisodes.map(item => item.id).indexOf(episode.id) === -1)
                                     && <button className="btn btn-sm btn-success w-80"
                                         onClick={(evt) => {this.onTranscribe(episode)}}>
                                         <i className="fas fa-cogs mr-2"></i>
                                         Transcribe
                                     </button>}
-                                    {(this.state.dbEpisodes.indexOf(episode.id) !== -1)
+                                    {(this.state.dbEpisodes.map(item => item.id).indexOf(episode.id) !== -1)
                                     && <button className="btn btn-sm btn-danger w-80"
                                         onClick={(evt) => {this.onDelete(episode.id)}}>
                                         <i className="fas fa-trash-alt mr-2"></i>
@@ -175,6 +221,17 @@ export class PodcastDetails extends React.Component<Props, State> {
                            <EpisodeTranscribe episode={this.state.selectedEpisode} onClose={this.onCloseTranscribeModal} />
                       </Modal.Body>
                    </Modal>
+
+                   <Modal size="lg" show={this.state.openSegmentModal} onHide={this.onCloseSegmentModal}>
+                      <Modal.Header closeButton>
+                         <Modal.Title className="text-center w-100">
+                             {this.state.selectedEpisode?.title}
+                         </Modal.Title>
+                         </Modal.Header>
+                         <Modal.Body>
+                            <SegmentList episode={this.state.selectedEpisode} onClose={this.onCloseSegmentModal} />
+                         </Modal.Body>
+                      </Modal>
             </div>
         )
     }

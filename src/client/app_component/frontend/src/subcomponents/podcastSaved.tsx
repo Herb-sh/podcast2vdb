@@ -68,26 +68,6 @@ export class PodcastSaved extends React.Component {
                });
      }
 
-     public getSegments() {
-             const url = SEGMENT_LIST_VDB_URL
-                fetch(url)
-                  .then(async (response) => {
-                    // Check if the response is successful (status code 200)
-                    if (response.ok) {
-                      return await response.json();
-                    }
-                    throw new Error("Network response was not ok.");
-                  })
-                  .then((jsonData) => {
-                    // Handle the received data
-                    this.state.segments = jsonData.sort((a, b) => a.start - b.start);
-                    Streamlit.setComponentValue(jsonData);
-                  })
-                  .catch((error) => {
-                    // Handle errors
-                    console.error("Error fetching data:", error);
-                  });
-     }
 
     public render = (): ReactNode => {
         return (

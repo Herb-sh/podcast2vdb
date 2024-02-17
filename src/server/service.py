@@ -163,7 +163,7 @@ def get_vdb_episode_list_by_podcast_id(podcast_id: str):
 
 
 # Get Segment-List By Episode Id
-@app.get("/v1/vdb/podcast/episode/{episode_id}/segments")
+@app.get("/v1/vdb/episode/{episode_id}/segments")
 def get_vdb_segment_list_by_episode_id(episode_id: str):
     segments = get_segment_list_by_episode_id(collection_name='segment', max_dimension=max_dimension, episode_id=episode_id)
     filtered_segments = [segment for segment in segments if segment['text'] != '']

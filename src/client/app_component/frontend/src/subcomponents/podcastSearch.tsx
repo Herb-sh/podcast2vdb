@@ -7,15 +7,15 @@ import React, { ReactNode } from "react";
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { Podcast } from "./../../models/podcast";
-import { PodcastDetails } from "./podcastDetails";
+import { EpisodeList } from "./episodeList";
 import { BASE_URL, PODCAST_SEARCH_URL, EPISODE_LIST_URL } from "./../config";
 
 
 export class Podcasts extends React.Component {
-  constructor(props) {
-    super(props);
+  public componentDidMount() {
     this.onSearch('Knowledge Science - Alles über KI, ML und NLP'); // @TODO remove later
   }
+
   public state: { searchInput: string; podcasts: Array<Podcast>; selectedPodcast?: Podcast; openDetailsModal: boolean } = {
     podcasts: [],
     searchInput: "",
@@ -135,7 +135,7 @@ export class Podcasts extends React.Component {
                </Modal.Title>
            </Modal.Header>
            <Modal.Body>
-             <PodcastDetails podcast={this.state.selectedPodcast} />
+             <EpisodeList podcast={this.state.selectedPodcast} />
            </Modal.Body>
            <Modal.Footer>
               <Button variant="secondary" onClick={this.closeDetailsModal}>

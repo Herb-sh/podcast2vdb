@@ -6,4 +6,4 @@ export const EPISODE_TRANSCRIBE_URL = BASE_URL + "/v1/vdb/transcribe/episode/{ep
 
 export const PODCAST_LIST_VDB_URL = BASE_URL + "/v1/vdb/podcasts"
 export const EPISODE_LIST_VDB_URL = BASE_URL + "/v1/vdb/episode/{podcast_id}";
-export const SEGMENT_LIST_VDB_URL = BASE_URL + "/v1/vdb/podcast/episode/{episode_id}/segments"
+export const SEGMENT_LIST_VDB_URL = BASE_URL + "/v1/vdb/episode/{episode_id}/segments"

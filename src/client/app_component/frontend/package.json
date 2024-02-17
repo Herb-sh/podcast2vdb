@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bootstrap": "^4.6.0",
     "react": "^16.13.1",
+    "react-bootstrap": "^2.9.2",
     "react-dom": "^16.13.1",
     "react-router-dom": "^6.21.1",
     "streamlit-component-lib": "^2.0.0"
