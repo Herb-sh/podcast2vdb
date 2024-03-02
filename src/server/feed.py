@@ -13,7 +13,7 @@ os.makedirs(DIR_SOURCE, exist_ok=True)
 PodcastIndex Feed Methods
 '''
 
-def search_podcast(podcast_name:str, config:dict=config):
+def search_podcast(podcast_name:str):
     '''
     Search for podcast with a certain podcast_name.
     '''
@@ -32,7 +32,7 @@ def get_podcast_by_feedId(feedId: int):
     index = podcastindex.init(podcastindex_config)
     return index.podcastByFeedId(feedId)
 
-def get_episodes(podcast_id : int, since : int = 0, max_results : int = 100, config : dict = config):
+def get_episodes(podcast_id : int, start : int = 0, max_results : int = 100):
     '''
     Get all episodes of a certain podcast with podcast_id.
     '''
@@ -41,13 +41,13 @@ def get_episodes(podcast_id : int, since : int = 0, max_results : int = 100, con
         'api_secret': config['PODCASTINDEX_API_SECRET']
     }
     index = podcastindex.init(podcastindex_config)
-    result = index.episodesByFeedId(podcast_id, since=since, max_results=max_results)
+    result = index.episodesByFeedId(podcast_id, since=start, max_results=max_results)
     if result['status']:
         return result['items']
     else:
         return []
 
-def get_episode(episode_id: int, config : dict = config):
+def get_episode(episode_id: int):
     '''
     Get all episodes of a certain podcast with podcast_id.
     '''

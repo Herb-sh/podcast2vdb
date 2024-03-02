@@ -39,7 +39,7 @@ async def read_root():
 
 
 @app.get("/v1/podcast/{podcast_name}")
-def feed(podcast_name: str):
+def get_podcasts_by_name(podcast_name: str):
     '''
     Search for podcast with a certain podcast_name.
     '''
