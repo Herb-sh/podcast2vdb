@@ -41,7 +41,11 @@ def parse_transcript_diarized(data, episode_id:str):
             current_start = line['start']
             current_end = line['end']
     # Append last phrase
-    tmp_dict = {'speaker': current_speaker, 'start': current_start, 'end': current_end, 'text': current_phrase.strip(), 'episode': episode_id}
+    tmp_dict = {'speaker': current_speaker,
+                'start': current_start,
+                'end': current_end,
+                'text': current_phrase.strip(),
+                'episode': episode_id}
     result.append(tmp_dict)
     combined_result['parsed_diarization'] = result
     return combined_result
@@ -52,7 +56,11 @@ def parse_raw_transcript(data:list, episode_id:str):
     combined_result['raw_transcript'] = data
     result = []
     for ele in data:
-        tmp_dict = {'speaker': 'unknown', 'start': ele['start'], 'end': ele['end'], 'text': ele['text'], 'episode': episode_id}
+        tmp_dict = {'speaker': 'unknown',
+                    'start': ele['start'],
+                    'end': ele['end'],
+                    'text': ele['text'],
+                    'episode': episode_id}
         result.append(tmp_dict)
     combined_result['parsed_transcript'] = result
     return combined_result
