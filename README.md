@@ -13,6 +13,10 @@ You need an account from HuggingFace to access the pyannote model.
 ### Docker
 
 1. Install Docker Desktop
+   1. https://milvus.io/docs/install_standalone-docker.md
+   2. mkdir milvus_compose
+   3. cd milvus_compose
+   4. wget https://github.com/milvus-io/milvus/releases/download/v2.2.8/milvus-standalone-docker-compose.yml -O docker-compose.yml
 2. Start
 
 3. Stop
@@ -33,9 +37,10 @@ Refer to [Streamlit documentation](https://docs.streamlit.io/library/components/
 ## Running App
 
 1. Start Docker
-   1. `docker-compose up -d`
-   2. `docker compose ps`
-   3. `docker port milvus-standalone 19530/tcp`
+   1. `cd podcast2vdb/milvus_compose`
+   2. `docker-compose up -d`
+   3. `docker compose ps`
+   4. `docker port milvus-standalone 19530/tcp`
 2. Start React Components
    1. `cd podcast2vdb/src/client/app_component/frontend`
    2. `npm run start`
@@ -43,7 +48,9 @@ Refer to [Streamlit documentation](https://docs.streamlit.io/library/components/
    1. `cd podcast2vdb/src`
    2. `streamlit run streamlit-app.py`
 4. Start FastAPI
-   1. `uvicorn service:app --host 127.0.0.1 --port 8000 --reload` 
-A local running web-page will open automatically
+   1. `cd podcast2vdb/src/server`
+   2. `uvicorn service:app --host 127.0.0.1 --port 8000 --reload` 
+
+   A local running web-page will open automatically
 
 

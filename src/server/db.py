@@ -34,7 +34,7 @@ def create_collections(dim=4):
         FieldSchema(name="author", dtype=DataType.VARCHAR, max_length=10000),
         FieldSchema(name="image", dtype=DataType.VARCHAR, max_length=10000),
         # FieldSchema(name="categories", dtype=DataType.VARCHAR, max_length=10000),
-        FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=1),
+        FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=dim),
     ]
 
     # Saving only the most necessary fields
@@ -46,7 +46,7 @@ def create_collections(dim=4):
         FieldSchema(name="image", dtype=DataType.VARCHAR, max_length=10000),
         FieldSchema(name="enclosureUrl", dtype=DataType.VARCHAR, max_length=10000),
         FieldSchema(name="podcast_id", dtype=DataType.INT64),
-        FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=1),
+        FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=dim),
     ]
 
     segment_fields = [
