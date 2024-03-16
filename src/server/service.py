@@ -85,6 +85,7 @@ async def get_episode_list(podcast_id: str,  max_results: int = 100, last_saved_
 
 @app.get("/v1/vdb/transcribe/episode/{episode_id}")
 async def transcribe_episode(episode_id: str):
+    print('transcribe start ' + episode_id)
     # Get Episode from Podcastindex
     episode_detail = get_episode(episode_id=episode_id)
     episode = episode_detail['episode']
@@ -148,28 +149,31 @@ async def transcribe_episode(episode_id: str):
 
     for i in range(len(transcript_parsed)):
         try:
-            text_vector.append(transcript_parsed[i]["text"] if i < len(transcript_parsed) - 1 else '')
-            start_vector.append(transcript_parsed[i]["start"] if i < len(transcript_parsed) - 1 else -1)
-            end_vector.append(transcript_parsed[i]["end"] if i < len(transcript_parsed) - 1 else -1)
+            episode_embedding = embed_text(transcript_parsed[i]['text'], model)
+            if episode_embedding is not None:
+                segment_embedding.append(episode_embedding)
+                text_vector.append(transcript_parsed[i]["text"] if i < len(transcript_parsed) - 1 else '')
+                start_vector.append(transcript_parsed[i]["start"] if i < len(transcript_parsed) - 1 else -1)
+                end_vector.append(transcript_parsed[i]["end"] if i < len(transcript_parsed) - 1 else -1)
 
-            episode_embedding = embed_text(transcript_parsed[i]["text"], model)
-            segment_embedding.append(episode_embedding)
+
         except IndexError:
             print('Index error ' + str(i))
 
     # Insert transcription segments
     segments = {
-        'episode_id': [episode['id'] for obj in range(len(transcript_parsed))],
+        'episode_id': [episode['id'] for obj in range(len(segment_embedding))],
         'text': text_vector,
         'start': start_vector,
         'end': end_vector,
-        'speaker': ['unknown' for obj in range(len(transcript_parsed))],
+        'speaker': ['unknown' for obj in range(len(segment_embedding))],
         'embedding': segment_embedding
     }
 
     df_segments = pd.DataFrame.from_dict(segments, orient='index')
     df_segments = df_segments.transpose()
 
+    print(df_segments)
     insert("segment", df_segments)
 
     return transcript_parsed

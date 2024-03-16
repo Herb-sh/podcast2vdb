@@ -30,6 +30,7 @@ export class EpisodeList extends React.Component<Props, State> {
     }
 
   private _convertDurationToTime = convertDurationToTime;
+  private _interval;
 
   public state: State = {
     episodes: [],
@@ -39,7 +40,6 @@ export class EpisodeList extends React.Component<Props, State> {
     openTranscribeModal: false,
     openSegmentModal: false
   }
-
 
   public componentDidMount() {
       this.getEpisodes(this.props?.podcast?.id);
@@ -133,6 +133,26 @@ export class EpisodeList extends React.Component<Props, State> {
     Streamlit.setComponentValue(this.state);
   }
 
+  public onListTranscribe() {
+    const episodes = this.state.episodes;
+    this._interval = setInterval(() => {
+
+        if (!this.state.selectedEpisode) { // Start with the first episode
+            this.onTranscribe(episodes[0])
+        } else {
+            if (this.state.openTranscribeModal) // do nothing if transcription still on progress
+                return;
+
+            const index = episodes.findIndex(item => item?.id === this?.state?.selectedEpisode?.id)
+            if (index === episodes.length - 1) { // remove interval if all episodes are transcribed
+                clearInterval(this._interval);
+            } else {
+                this.onTranscribe(episodes[index + 1])
+            }
+        }
+    }, 1000);
+  }
+
   public onCloseSegmentModal = () => {
     this.state.openSegmentModal = false;
     Streamlit.setComponentValue(this.state);
@@ -146,21 +166,32 @@ export class EpisodeList extends React.Component<Props, State> {
     const { podcast } = this.props;
     return (
          <div>
-            <div className="input-group mb-3">
-                        <input
-                          type="text"
-                          className="form-control"
-                          onChange={(evt) => this.onSearch(evt.target.value)}
-                          placeholder="Search episodes"
-                        />
-                        <span
-                          className="input-group-text btn btn-primary"
-                          id="basic-addon2"
-                          onClick={this.onSearch}
-                        >
-                          Search
-                        </span>
-                      </div>
+               <div className="row">
+                    <div className="col-10">
+                         <div className="input-group mb-3">
+                                                <input
+                                                  type="text"
+                                                  className="form-control"
+                                                  onChange={(evt) => this.onSearch(evt.target.value)}
+                                                  placeholder="Search episodes"
+                                                />
+                                                <span
+                                                  className="input-group-text btn btn-primary"
+                                                  id="basic-addon2"
+                                                  onClick={this.onSearch}
+                                                >
+                                                  Search
+                                                </span>
+                         </div>
+                    </div>
+                    <div className="col-2">
+                        <button className="btn btn-success w-100"
+                                onClick={(evt) => {this.onListTranscribe()}}>
+                                <i className="fas fa-cogs mr-2"></i>
+                                Transcribe All
+                        </button>
+                    </div>
+                </div>
             {this.state.episodes.length != 0 && <table className="table">
                      <thead>
                        <tr>
