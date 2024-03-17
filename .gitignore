@@ -162,3 +162,10 @@ cython_debug/
 
 # Data
 data/
+/milvus_compose/
+/milvus_compose/
+/milvus_compose/volumes/
+/milvus_compose/volumes/milvus/
+/milvus_compose/volumes/minio/
+/milvus_compose/volumes/etcd/
+/milvus_compose/volumes/etcd/member/wal/
