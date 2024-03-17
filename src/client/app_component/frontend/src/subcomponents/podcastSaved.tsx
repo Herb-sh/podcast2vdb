@@ -107,7 +107,7 @@ export class PodcastSaved extends React.Component {
                                    <b>Disclaimer:</b> This page is a basic overview of saved podcasts.
                               </div>
                               <div className="text-center text-info">
-                                   All transcribed episodes and segments are available in "Podcast Search" (if there are any).
+                                   All transcribed episodes and segments are available in "Search Podcasts" (if there are any).
                               </div>
                 </section>
             </div>
