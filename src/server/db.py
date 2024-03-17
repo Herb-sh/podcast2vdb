@@ -102,7 +102,7 @@ def get_collection_list():
 
 
 # Get Transcription By FileId
-def get_podcast_list():
+def get_podcast_list(max_dimension: int):
     collection_name = 'podcast'
     collection = None
     if utility.has_collection(collection_name):
@@ -114,10 +114,10 @@ def get_podcast_list():
 
     # Query the collection by ID
     search_param = {
-        'data': [[1] * 1],
+        'data': [[1] * max_dimension],
         'anns_field': 'embedding',
-        'param': {'metric_type': 'L2', 'params': {'nlist': 128}},
-        'limit': 1,
+        'param': {'metric_type': 'L2', 'params': {'nlist': 16}},
+        'limit': 50,
         'expr': "id >= 0",
         'output_fields': ['id', 'title', 'description', 'author', 'image']
     }

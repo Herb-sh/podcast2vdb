@@ -182,7 +182,7 @@ async def transcribe_episode(episode_id: str):
 # Get Podcast-List
 @app.get("/v1/vdb/podcasts")
 def get_vdb_podcast_list():
-    return get_podcast_list()
+    return get_podcast_list(max_dimension=max_dimension)
 
 
 # Get Episode-List By Podcast Id
