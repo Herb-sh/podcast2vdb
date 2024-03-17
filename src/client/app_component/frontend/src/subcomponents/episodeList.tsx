@@ -7,7 +7,8 @@ import React, { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import Modal from 'react-bootstrap/Modal';
 import { Podcast } from "./../../models/podcast";
-import { BASE_URL, EPISODE_LIST_URL, EPISODE_LIST_VDB_URL, SEGMENT_LIST_VDB_URL } from "./../config";
+import { BASE_URL, EPISODE_LIST_URL, EPISODE_LIST_VDB_URL,
+         SEGMENT_LIST_VDB_URL, DELETE_EPISODE_VDB_URL } from "./../config";
 import { Episode, EpisodeExtended } from "./../../models/episode";
 import { EpisodeTranscribe } from "./episodeTranscribe"
 import { SegmentList } from "./segmentList"
@@ -101,29 +102,15 @@ export class EpisodeList extends React.Component<Props, State> {
         this.state.selectedEpisode = episode;
         this.state.openSegmentModal = true;
         Streamlit.setComponentValue(this.state);
-       /*          const url = SEGMENT_LIST_VDB_URL.replace('{episode_id}', episodeId);
-                    fetch(url)
-                      .then(async (response) => {
-                        // Check if the response is successful (status code 200)
-                        if (response.ok) {
-                          return await response.json();
-                        }
-                        throw new Error("Network response was not ok.");
-                      })
-                      .then((jsonData) => {
-                        // Handle the received data
-                        this.state.segments = jsonData.sort((a, b) => a.start - b.start);
-                        Streamlit.setComponentValue(jsonData);
-                      })
-                      .catch((error) => {
-                        // Handle errors
-                        console.error("Error fetching data:", error);
-                      });
-                      */
   }
 
   public onCloseTranscribeModal = () =>  {
     this.state.openTranscribeModal = false;
+    //
+    setTimeout( () => {
+        this.getDBEpisodes(this.props?.podcast?.id); // refresh db episodes
+    }, 1000)
+    //
     Streamlit.setComponentValue(this.state);
   }
 
@@ -134,7 +121,7 @@ export class EpisodeList extends React.Component<Props, State> {
   }
 
   public onListTranscribe() {
-    const episodes = this.state.episodes;
+    const episodes = [this.state.episodes[0], this.state.episodes[1], this.state.episodes[2]]; // this.state.episodes[0], this.state.episodes[1],
     this._interval = setInterval(() => {
 
         if (!this.state.selectedEpisode) { // Start with the first episode
@@ -159,7 +146,25 @@ export class EpisodeList extends React.Component<Props, State> {
   }
 
   public onDelete(episodeId: number) {
-    console.log('delete');
+    const url = (DELETE_EPISODE_VDB_URL + "").replace("{episode_id}", (episodeId || '') + '');
+            fetch(url)
+              .then(async (response) => {
+                // Check if the response is successful (status code 200)
+                if (response.ok) {
+                  return await response.json();
+                }
+                throw new Error("Network response was not ok.");
+              })
+              .then((jsonData) => {
+                //
+                setTimeout( () => {
+                    this.getDBEpisodes(this.props?.podcast?.id); // refresh db episodes
+                }, 1000)
+              })
+              .catch((error) => {
+                // Handle errors
+                console.error("Error fetching data:", error);
+              });
   }
 
   public render = (): ReactNode => {
@@ -242,7 +247,7 @@ export class EpisodeList extends React.Component<Props, State> {
                      </tbody>
                    </table>}
 
-                   <Modal size="lg" show={this.state.openTranscribeModal} onHide={this.onCloseTranscribeModal}>
+                   <Modal size="lg" show={this.state.openTranscribeModal} onHide={this.onCloseTranscribeModal} backdrop="static">
                       <Modal.Header closeButton>
                           <Modal.Title className="text-center w-100">
                               {this.state.selectedEpisode?.title}

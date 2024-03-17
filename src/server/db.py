@@ -121,7 +121,7 @@ def get_podcast_list():
         'expr': "id >= 0",
         'output_fields': ['id', 'title', 'description', 'author', 'image']
     }
-    collection.load()
+
     # Search for all vectors in the collection
     results = collection.search(**search_param)
 
@@ -136,7 +136,7 @@ def get_podcast_list():
     return retrieved_text
 
 
-def get_episode_list_by_podcast_id(podcast_id:int):
+def get_episode_list_by_podcast_id(podcast_id:int, max_dimension: int):
     collection_name = 'episode'
     collection = None
     if utility.has_collection(collection_name):
@@ -148,15 +148,15 @@ def get_episode_list_by_podcast_id(podcast_id:int):
 
     # Query the collection by ID
     search_param = {
-        'data': [[1] * 1],
+        'data': [[1] * max_dimension],
         'anns_field': 'embedding',
-        'param': {'metric_type': 'L2', 'params': {'nlist': 128}},
-        'limit': 1,
+        'param': {'metric_type': 'L2', 'params': {'nlist': 16}},
+        'limit': 1000,
         'expr': f"podcast_id == {podcast_id}",
         'output_fields': ['id', 'title', 'description', 'datePublishedPretty',
                           'image', 'enclosureUrl', 'podcast_id']
     }
-    collection.load()
+
     # Search for all vectors in the collection
     results = collection.search(**search_param)
 
@@ -180,14 +180,15 @@ def get_segment_list_by_episode_id(collection_name: str, max_dimension: int, epi
         search_param = {
             'data': [[1] * max_dimension],
             'anns_field': 'embedding',
-            'param': {'metric_type': 'L2', 'params': {'nlist': 128}},
-            'limit': max_dimension,
-            'expr': "id >= 0",
+            'param': {'metric_type': 'L2', 'params': {'nlist': 16}},
+            'limit': 1000,
+            'expr': f"episode_id == {episode_id}",
             'output_fields': ['episode_id', 'text', 'start', 'end', 'speaker']  # , 'embedding
         }
         collection.load()
         # Search for all vectors in the collection
         results = collection.search(**search_param)
+        print(results)
         retrieved_text = [{
             'text': result.entity.get("text"),
             'start': result.entity.get("start"),
@@ -216,35 +217,26 @@ def insert(collection_name, item):
 # Update Transcription
 
 # Delete Transcription
-def delete_podcast_by_id():
+def delete_vdb_podcast_by_id():
     # 1. delete podcast
     # 2. delete episodes
     # 3. delete transcriptions
     return False
 
-
-def delete_episode_by_id():
-    # 1. delete episode
-    # 2. delete transcriptions
-    return False
-
-
-def delete_item_by_id(collection_name: str, id):
+def delete_item_by_id(collection_name: str, id: str):
     collection = None
     if utility.has_collection(collection_name):
         collection = Collection(collection_name)
     else:
         print("Collection not available!")
-    expr = f"id=={id}"
-    result = collection.query(expr=expr)
-    print(f"query before delete by expr=`{expr}` -> result: \n-{result[0]}\n-{result[1]}\n")
 
     collection.delete(expr=f"id=={id}")
+    return {}
 
 
 # Drop Collection
 def drop_collection(collection_name: str):
-    # print(fmt.format("Drop collection " + collection_name))
+    print(f"Drop collection {collection_name}")
     utility.drop_collection(collection_name)
 
 

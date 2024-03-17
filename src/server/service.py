@@ -4,7 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import dotenv_values
 from feed import search_podcast, get_episodes, get_episode, download_episode, get_podcast_by_feedId
-from db import db_init, get_podcast_list, get_episode_list_by_podcast_id, get_segment_list_by_episode_id, insert
+from db import (db_init, get_podcast_list, get_episode_list_by_podcast_id,
+                get_segment_list_by_episode_id, insert, delete_item_by_id)
 rng = np.random.default_rng(seed=19530)
 from core import transcribe
 
@@ -173,7 +174,6 @@ async def transcribe_episode(episode_id: str):
     df_segments = pd.DataFrame.from_dict(segments, orient='index')
     df_segments = df_segments.transpose()
 
-    print(df_segments)
     insert("segment", df_segments)
 
     return transcript_parsed
@@ -186,9 +186,9 @@ def get_vdb_podcast_list():
 
 
 # Get Episode-List By Podcast Id
-@app.get("/v1/vdb/episode/{podcast_id}")
+@app.get("/v1/vdb/episodes/{podcast_id}")
 def get_vdb_episode_list_by_podcast_id(podcast_id: str):
-    return get_episode_list_by_podcast_id(podcast_id)
+    return get_episode_list_by_podcast_id(podcast_id, max_dimension=max_dimension)
 
 
 # Get Segment-List By Episode Id
@@ -197,3 +197,8 @@ def get_vdb_segment_list_by_episode_id(episode_id: str):
     segments = get_segment_list_by_episode_id(collection_name='segment', max_dimension=max_dimension, episode_id=episode_id)
     filtered_segments = [segment for segment in segments if segment['text'] != '']
     return filtered_segments
+
+
+@app.get("/v1/vdb/delete/episode/{episode_id}")
+def delete_vdb_episode_by_id(episode_id: str):
+    return delete_item_by_id('episode', episode_id)

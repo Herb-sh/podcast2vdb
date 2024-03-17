@@ -30,7 +30,6 @@ export class SegmentList extends React.Component<Props, State>  {
     }
 
      public getSegmentList(episodeId: number) {
-        console.log(episodeId);
              const url = SEGMENT_LIST_VDB_URL.replace("{episode_id}", episodeId + "")
                 fetch(url)
                   .then(async (response) => {
