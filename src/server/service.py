@@ -4,7 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import dotenv_values
 from feed import search_podcast, get_episodes, get_episode, download_episode, get_podcast_by_feedId
-from db import db_init, get_podcast_list, get_episode_list_by_podcast_id, get_segment_list_by_episode_id, insert
+from db import (db_init, get_podcast_list, get_episode_list_by_podcast_id,
+                get_segment_list_by_episode_id, insert, delete_item_by_id)
 rng = np.random.default_rng(seed=19530)
 from core import transcribe
 
@@ -85,6 +86,7 @@ async def get_episode_list(podcast_id: str,  max_results: int = 100, last_saved_
 
 @app.get("/v1/vdb/transcribe/episode/{episode_id}")
 async def transcribe_episode(episode_id: str):
+    print('transcribe start ' + episode_id)
     # Get Episode from Podcastindex
     episode_detail = get_episode(episode_id=episode_id)
     episode = episode_detail['episode']
@@ -148,22 +150,24 @@ async def transcribe_episode(episode_id: str):
 
     for i in range(len(transcript_parsed)):
         try:
-            text_vector.append(transcript_parsed[i]["text"] if i < len(transcript_parsed) - 1 else '')
-            start_vector.append(transcript_parsed[i]["start"] if i < len(transcript_parsed) - 1 else -1)
-            end_vector.append(transcript_parsed[i]["end"] if i < len(transcript_parsed) - 1 else -1)
+            episode_embedding = embed_text(transcript_parsed[i]['text'], model)
+            if episode_embedding is not None:
+                segment_embedding.append(episode_embedding)
+                text_vector.append(transcript_parsed[i]["text"] if i < len(transcript_parsed) - 1 else '')
+                start_vector.append(transcript_parsed[i]["start"] if i < len(transcript_parsed) - 1 else -1)
+                end_vector.append(transcript_parsed[i]["end"] if i < len(transcript_parsed) - 1 else -1)
 
-            episode_embedding = embed_text(transcript_parsed[i]["text"], model)
-            segment_embedding.append(episode_embedding)
+
         except IndexError:
             print('Index error ' + str(i))
 
     # Insert transcription segments
     segments = {
-        'episode_id': [episode['id'] for obj in range(len(transcript_parsed))],
+        'episode_id': [episode['id'] for obj in range(len(segment_embedding))],
         'text': text_vector,
         'start': start_vector,
         'end': end_vector,
-        'speaker': ['unknown' for obj in range(len(transcript_parsed))],
+        'speaker': ['unknown' for obj in range(len(segment_embedding))],
         'embedding': segment_embedding
     }
 
@@ -178,13 +182,13 @@ async def transcribe_episode(episode_id: str):
 # Get Podcast-List
 @app.get("/v1/vdb/podcasts")
 def get_vdb_podcast_list():
-    return get_podcast_list()
+    return get_podcast_list(max_dimension=max_dimension)
 
 
 # Get Episode-List By Podcast Id
-@app.get("/v1/vdb/episode/{podcast_id}")
+@app.get("/v1/vdb/episodes/{podcast_id}")
 def get_vdb_episode_list_by_podcast_id(podcast_id: str):
-    return get_episode_list_by_podcast_id(podcast_id)
+    return get_episode_list_by_podcast_id(podcast_id, max_dimension=max_dimension)
 
 
 # Get Segment-List By Episode Id
@@ -193,3 +197,8 @@ def get_vdb_segment_list_by_episode_id(episode_id: str):
     segments = get_segment_list_by_episode_id(collection_name='segment', max_dimension=max_dimension, episode_id=episode_id)
     filtered_segments = [segment for segment in segments if segment['text'] != '']
     return filtered_segments
+
+
+@app.get("/v1/vdb/delete/episode/{episode_id}")
+def delete_vdb_episode_by_id(episode_id: str):
+    return delete_item_by_id('episode', episode_id)

@@ -27,7 +27,7 @@ You need an account from HuggingFace to access the pyannote model.
 @TODO Streamlit & React Installation
 
 
-React component
+Start React component
 1. `cd podcast2vdb/src/client/app_component/frontend`
 2. `npm install`  # Initialize the project and install npm dependencies
 3. `npm run start` # Repeated later on every start-run
@@ -41,6 +41,9 @@ Refer to [Streamlit documentation](https://docs.streamlit.io/library/components/
    2. `docker-compose up -d`
    3. `docker compose ps`
    4. `docker port milvus-standalone 19530/tcp`
+Stop Docker
+   1. `docker compose down`
+   2. `rm -rf  volumes`
 2. Start React Components
    1. `cd podcast2vdb/src/client/app_component/frontend`
    2. `npm run start`
