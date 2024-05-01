@@ -27,7 +27,7 @@ export class Podcasts extends React.Component {
     this.state.searchInput = value;
     if (!this.state.searchInput || this.state.searchInput.length < 3) {
        this.state.podcasts = []
-        Streamlit.setComponentValue(this.state);
+       Streamlit.setComponentValue(this.state);
        return;
     }
     Streamlit.setComponentValue(this.state);
@@ -53,6 +53,10 @@ export class Podcasts extends React.Component {
         console.error("Error fetching data:", error);
       });
   };
+
+  public triggerSearch = () =>  {
+    this.onSearch(this.state.searchInput);
+  }
 
   public openDetailsModal = (podcast: Podcast) => {
       this.state.openDetailsModal = true;
@@ -85,7 +89,7 @@ export class Podcasts extends React.Component {
             <span
               className="input-group-text btn btn-primary"
               id="basic-addon2"
-              onClick={this.onSearch}
+              onClick={this.triggerSearch}
             >
               Load podcasts
             </span>
