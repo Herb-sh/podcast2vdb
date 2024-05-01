@@ -69,8 +69,6 @@ export class Podcasts extends React.Component {
       Streamlit.setComponentValue(this.state);
   }
 
-  public close
-
   public render = (): ReactNode => {
     return (
       <div>
