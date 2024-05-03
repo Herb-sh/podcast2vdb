@@ -4,7 +4,6 @@ ffmpeg-python
 python-dotenv
 python-podcastindex
 requests
-feed
 whisperx @ git+https://github.com/m-bain/whisperx.git@main
 streamlit=1.27.2
 pymilvus==2.3.2
