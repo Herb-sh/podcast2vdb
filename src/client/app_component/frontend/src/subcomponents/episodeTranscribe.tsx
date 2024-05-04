@@ -10,7 +10,7 @@ import { BASE_URL, EPISODE_TRANSCRIBE_URL } from "./../config";
 
 import { Episode } from "./../../models/episode";
 
-type Props = { episode: Episode | undefined, onClose: Function };
+type Props = { episode: Episode | undefined, onFinish: Function };
 type State = { episode: Episode | undefined};
 
 export class EpisodeTranscribe extends React.Component<Props, State> {
@@ -49,7 +49,7 @@ export class EpisodeTranscribe extends React.Component<Props, State> {
   }
 
   public transcriptionFinished() {
-    this.props.onClose();
+    this.props.onFinish();
   }
 
   public render() {

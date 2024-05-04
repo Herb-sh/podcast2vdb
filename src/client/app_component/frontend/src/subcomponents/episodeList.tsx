@@ -22,7 +22,8 @@ type State = {
     dbEpisodes: Array<Episode>,
     selectedEpisode?: Episode,
     openTranscribeModal: boolean,
-    openSegmentModal: boolean
+    openSegmentModal: boolean,
+    transcribeAll: boolean
 };
 
 export class EpisodeList extends React.Component<Props, State> {
@@ -39,7 +40,8 @@ export class EpisodeList extends React.Component<Props, State> {
     dbEpisodes: [],
     selectedEpisode: undefined,
     openTranscribeModal: false,
-    openSegmentModal: false
+    openSegmentModal: false,
+    transcribeAll: false
   }
 
   public componentDidMount() {
@@ -104,13 +106,28 @@ export class EpisodeList extends React.Component<Props, State> {
         Streamlit.setComponentValue(this.state);
   }
 
+  // If close button is clicked
   public onCloseTranscribeModal = () =>  {
     this.state.openTranscribeModal = false;
+    this.state.transcribeAll = false;
     //
     setTimeout( () => {
         this.getDBEpisodes(this.props?.podcast?.id); // refresh db episodes
-    }, 1000)
+    }, 1000);
     //
+    Streamlit.setComponentValue(this.state);
+  }
+
+  public onFinishTranscribeItem = () => {
+    this.state.openTranscribeModal = false;
+    //
+    setTimeout( () => {
+       this.getDBEpisodes(this.props?.podcast?.id); // refresh db episodes
+    }, 1000);
+    //
+    if (this.state.transcribeAll) {
+        this.onNextEpisodeTranscribe();
+    }
     Streamlit.setComponentValue(this.state);
   }
 
@@ -120,24 +137,44 @@ export class EpisodeList extends React.Component<Props, State> {
     Streamlit.setComponentValue(this.state);
   }
 
-  public onListTranscribe() {
-    const episodes = [this.state.episodes[0], this.state.episodes[1], this.state.episodes[2]]; // this.state.episodes[0], this.state.episodes[1],
-    this._interval = setInterval(() => {
+  public onAllTranscribe() {
+    this.state.transcribeAll = true;
+    this.onNextEpisodeTranscribe();
+  }
+
+  // Handles
+  public onNextEpisodeTranscribe() {
+    const episodes = this.state.episodes;
+        const index = episodes.findIndex(item => item?.id === this?.state?.selectedEpisode?.id);
+        const firstEpisode = episodes[0];
+        const nextEpisode = episodes[index !== -1 ? index + 1 : 1]; // second item or greater
 
         if (!this.state.selectedEpisode) { // Start with the first episode
-            this.onTranscribe(episodes[0])
+            const isTranscribed = (this.state.dbEpisodes.map(item => item.id).indexOf(firstEpisode.id) !== -1);
+            if (isTranscribed) {
+                this.state.selectedEpisode = nextEpisode;
+                console.log('Episode is already transcribed. Moving to the next one!');
+                this.onNextEpisodeTranscribe();
+            } else {
+                this.onTranscribe(firstEpisode)
+            }
         } else {
             if (this.state.openTranscribeModal) // do nothing if transcription still on progress
                 return;
 
-            const index = episodes.findIndex(item => item?.id === this?.state?.selectedEpisode?.id)
             if (index === episodes.length - 1) { // remove interval if all episodes are transcribed
-                clearInterval(this._interval);
+               this.state.transcribeAll = false;
             } else {
-                this.onTranscribe(episodes[index + 1])
+                const isTranscribed = (this.state.dbEpisodes.map(item => item.id).indexOf(nextEpisode.id) !== -1);
+                if (isTranscribed) {
+                    this.state.selectedEpisode = nextEpisode;
+                    console.log('Episode is already transcribed. Moving to the next one!');
+                    this.onNextEpisodeTranscribe();
+                } else {
+                    this.onTranscribe(nextEpisode)
+                }
             }
         }
-    }, 1000);
   }
 
   public onCloseSegmentModal = () => {
@@ -191,7 +228,7 @@ export class EpisodeList extends React.Component<Props, State> {
                     </div>
                     <div className="col-2">
                         <button className="btn btn-success w-100"
-                                onClick={(evt) => {this.onListTranscribe()}}>
+                                onClick={(evt) => {this.onAllTranscribe()}}>
                                 <i className="fas fa-cogs mr-2"></i>
                                 Transcribe All
                         </button>
@@ -254,7 +291,7 @@ export class EpisodeList extends React.Component<Props, State> {
                           </Modal.Title>
                       </Modal.Header>
                       <Modal.Body>
-                           <EpisodeTranscribe episode={this.state.selectedEpisode} onClose={this.onCloseTranscribeModal} />
+                           <EpisodeTranscribe episode={this.state.selectedEpisode} onFinish={this.onFinishTranscribeItem} />
                       </Modal.Body>
                    </Modal>
 
