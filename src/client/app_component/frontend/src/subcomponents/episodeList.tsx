@@ -123,11 +123,13 @@ export class EpisodeList extends React.Component<Props, State> {
     //
     setTimeout( () => {
        this.getDBEpisodes(this.props?.podcast?.id); // refresh db episodes
+
+       //
+       if (this.state.transcribeAll) {
+          this.onNextEpisodeTranscribe();
+       }
     }, 1000);
-    //
-    if (this.state.transcribeAll) {
-        this.onNextEpisodeTranscribe();
-    }
+
     Streamlit.setComponentValue(this.state);
   }
 
@@ -153,7 +155,8 @@ export class EpisodeList extends React.Component<Props, State> {
             const isTranscribed = (this.state.dbEpisodes.map(item => item.id).indexOf(firstEpisode.id) !== -1);
             if (isTranscribed) {
                 this.state.selectedEpisode = nextEpisode;
-                console.log('Episode is already transcribed. Moving to the next one!');
+                console.log(`Episode "${nextEpisode['title']}" is already transcribed. Moving to the next one!`);
+                Streamlit.setComponentValue(this.state);
                 this.onNextEpisodeTranscribe();
             } else {
                 this.onTranscribe(firstEpisode)
@@ -164,11 +167,13 @@ export class EpisodeList extends React.Component<Props, State> {
 
             if (index === episodes.length - 1) { // remove interval if all episodes are transcribed
                this.state.transcribeAll = false;
+               Streamlit.setComponentValue(this.state);
             } else {
                 const isTranscribed = (this.state.dbEpisodes.map(item => item.id).indexOf(nextEpisode.id) !== -1);
                 if (isTranscribed) {
                     this.state.selectedEpisode = nextEpisode;
-                    console.log('Episode is already transcribed. Moving to the next one!');
+                    console.log(`Episode "${nextEpisode['title']}" is already transcribed. Moving to the next one!`);
+                    Streamlit.setComponentValue(this.state);
                     this.onNextEpisodeTranscribe();
                 } else {
                     this.onTranscribe(nextEpisode)
